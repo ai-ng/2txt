@@ -7,6 +7,14 @@ const anthropic = new Anthropic();
 
 export async function POST(req: Request) {
 	const { prompt } = await req.json();
+
+	// roughly 5MB in base64
+	if (prompt.length > 7_182_745) {
+		return new Response("Image too large, maximum file size is 5MB.", {
+			status: 400,
+		});
+	}
+
 	const { type, data } = decodeBase64Image(prompt);
 
 	if (!type || !data)
@@ -19,13 +27,6 @@ export async function POST(req: Request) {
 		);
 	}
 
-	// roughly 5MB in base64
-	if (data.length > 7_182_745) {
-		return new Response("Image too large, maximum file size is 5MB.", {
-			status: 400,
-		});
-	}
-
 	const response = await anthropic.messages.create({
 		messages: [
 			{
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
 				content: [
 					{
 						type: "text",
-						text: "Respond with a JSON object with two keys: `description`, a description of the image to be used as alt text, and `text`, containing the text extracted from the image. If there is no text, set `text` to an empty string.",
+						text: "Only respond with the following: a description of the image to be used as alt text, and the text extracted from the image. Begin each one with a triangle symbol (▲ U+25B2). If there is no text, only respond with the description. Do not include any other information.",
 					},
 					{
 						type: "image",
@@ -47,7 +48,12 @@ export async function POST(req: Request) {
 			},
 			{
 				role: "assistant",
-				content: "{",
+				content: [
+					{
+						type: "text",
+						text: "▲",
+					},
+				],
 			},
 		],
 		model: "claude-3-haiku-20240307",

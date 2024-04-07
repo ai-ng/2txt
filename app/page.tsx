@@ -2,14 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import { IconPhotoUp } from "@tabler/icons-react";
+import { IconCopy, IconLoader2, IconPhotoUp } from "@tabler/icons-react";
 import { useCompletion } from "ai/react";
 import { toast } from "sonner";
 
 export default function Home() {
 	const [isDraggingOver, setIsDraggingOver] = useState(false);
 	const inputRef = useRef<HTMLInputElement>(null);
-	const { complete, completion } = useCompletion({
+	const { complete, completion, isLoading } = useCompletion({
 		onError: (e) => toast.error(e.message),
 	});
 
@@ -54,11 +54,13 @@ export default function Home() {
 		submit(file);
 	}
 
+	const [description, text] = completion.split("▲");
+
 	return (
-		<div className="grow items-center flex justify-center">
+		<main className="m-auto flex gap-3">
 			<div
 				className={clsx(
-					"w-full h-72 md:h-96 max-w-xl rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer flex flex-col justify-center items-center p-3 text-lg border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900",
+					"h-72 md:h-96 max-w-xl rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer flex flex-col justify-center items-center p-3 text-lg border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900",
 					{
 						"border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700":
 							!isDraggingOver,
@@ -70,7 +72,11 @@ export default function Home() {
 				onDrop={handleDrop}
 				onClick={() => inputRef.current?.click()}
 			>
-				<IconPhotoUp className="size-12 pointer-events-none" />
+				{isLoading ? (
+					<IconLoader2 className="size-12 pointer-events-none animate-spin" />
+				) : (
+					<IconPhotoUp className="size-12 pointer-events-none" />
+				)}
 
 				<p className="mt-5 max-w-96 text-center pointer-events-none">
 					drop <Or /> paste <Or /> click to upload
@@ -82,10 +88,15 @@ export default function Home() {
 					ref={inputRef}
 					onChange={handleInputChange}
 				/>
-
-				{completion}
 			</div>
-		</div>
+
+			{(isLoading || completion) && (
+				<div className="space-y-3 w-96">
+					<Section content={description}>Description</Section>
+					<Section content={text}>Text</Section>
+				</div>
+			)}
+		</main>
 	);
 }
 
@@ -103,4 +114,31 @@ function toBase64(file: File): Promise<string> {
 		};
 		reader.onerror = (error) => reject(error);
 	});
+}
+
+function Section({
+	children,
+	content,
+}: {
+	children: string;
+	content?: string;
+}) {
+	function copy() {
+		navigator.clipboard.writeText(content || "");
+		toast.success("Copied to clipboard");
+	}
+
+	return (
+		<div className="p-3 rounded-md bg-gray-100 dark:bg-gray-900 w-full drop-shadow-sm">
+			<button
+				className="float-right rounded-md p-1 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors ease-in-out"
+				onClick={copy}
+				aria-label="Copy to clipboard"
+			>
+				<IconCopy />
+			</button>
+			<h2 className="text-xl font-semibold">{children}</h2>
+			<p>{content || "No text found"}</p>
+		</div>
+	);
 }
