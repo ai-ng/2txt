@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
 	title: "2txt",
@@ -16,8 +17,12 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body
-				className={`${GeistSans.variable} ${GeistMono.variable} font-sans bg-gray-50 dark:bg-gray-950 text-black dark:text-white p-3 min-h-dvh flex flex-col`}
+				className={`${GeistSans.variable} ${GeistMono.variable} font-sans bg-gray-50 dark:bg-gray-950 text-black dark:text-white px-3 py-10 min-h-dvh flex flex-col`}
 			>
+				<h1 className="font-semibold text-center text-xl bg-gradient-to-b dark:from-gray-50 dark:to-gray-200 from-gray-950 to-gray-800 bg-clip-text text-transparent">
+					2txt
+				</h1>
+
 				{children}
 
 				<footer className="text-center text-sm dark:text-gray-400 text-gray-600 font-mono">
@@ -37,6 +42,8 @@ export default function RootLayout({
 						</A>
 					</p>
 				</footer>
+
+				<Toaster richColors theme="system" />
 			</body>
 		</html>
 	);

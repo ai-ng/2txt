@@ -5,26 +5,26 @@ import { AnthropicStream, StreamingTextResponse } from "ai";
 
 const anthropic = new Anthropic();
 
-const supportedImageTypes = [
-	"image/jpeg",
-	"image/png",
-	"image/gif",
-	"image/webp",
-];
-
 export async function POST(req: Request) {
 	const { prompt } = await req.json();
 	const { type, data } = decodeBase64Image(prompt);
-	// return console.log(prompt);
 
-	// if (!image) return "No image provided";
-	// if (!supportedImageTypes.includes(image.type))
-	// 	return "Unsupported image format";
-	// if (image.size > 5 * 1024 * 1024) return "Image too large";
+	if (!type || !data)
+		return new Response("Invalid image data", { status: 400 });
 
-	// const imageBase64 = await getBase64(image);
+	if (!isSupportedImageType(type)) {
+		return new Response(
+			"Unsupported image format. Only JPEG, PNG, GIF, and WEBP files are supported.",
+			{ status: 400 }
+		);
+	}
 
-	// return console.log(image);
+	// roughly 5MB in base64
+	if (data.length > 7_182_745) {
+		return new Response("Image too large, maximum file size is 5MB.", {
+			status: 400,
+		});
+	}
 
 	const response = await anthropic.messages.create({
 		messages: [
@@ -39,11 +39,7 @@ export async function POST(req: Request) {
 						type: "image",
 						source: {
 							type: "base64",
-							media_type: type as
-								| "image/jpeg"
-								| "image/png"
-								| "image/gif"
-								| "image/webp",
+							media_type: type,
 							data,
 						},
 					},
@@ -65,12 +61,21 @@ export async function POST(req: Request) {
 
 function decodeBase64Image(dataString: string) {
 	const matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-	if (matches?.length !== 3) {
-		throw new Error("Invalid input string");
-	}
 
 	return {
-		type: matches[1],
-		data: matches[2],
+		type: matches?.[1],
+		data: matches?.[2],
 	};
+}
+
+type SupportedImageTypes =
+	| "image/jpeg"
+	| "image/png"
+	| "image/gif"
+	| "image/webp";
+
+function isSupportedImageType(type: string): type is SupportedImageTypes {
+	return ["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
+		type
+	);
 }
