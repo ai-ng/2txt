@@ -2,10 +2,33 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { AnthropicStream, StreamingTextResponse } from "ai";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
 const anthropic = new Anthropic();
 
+const ratelimit =
+	process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
+		? new Ratelimit({
+				redis: new Redis({
+					url: process.env.KV_REST_API_URL,
+					token: process.env.KV_REST_API_TOKEN,
+				}),
+				limiter: Ratelimit.slidingWindow(5, "30 m"),
+				analytics: true,
+		  })
+		: false;
+
 export async function POST(req: Request) {
+	if (ratelimit) {
+		const ip = req.headers.get("x-real-ip") ?? "local";
+		const rl = await ratelimit.limit(ip);
+
+		if (!rl.success) {
+			return new Response("Rate limit exceeded", { status: 429 });
+		}
+	}
+
 	const { prompt } = await req.json();
 
 	// roughly 5MB in base64
