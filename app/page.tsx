@@ -57,7 +57,7 @@ export default function Home() {
 	const [description, text] = completion.split("▲");
 
 	return (
-		<main className="m-auto flex gap-3">
+		<main className="m-auto flex flex-col md:flex-row gap-3">
 			<div
 				className={clsx(
 					"h-72 md:h-96 max-w-xl rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer flex flex-col justify-center items-center p-3 text-lg border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900",
@@ -91,7 +91,7 @@ export default function Home() {
 			</div>
 
 			{(isLoading || completion) && (
-				<div className="space-y-3 w-96">
+				<div className="space-y-3 max-w-96">
 					<Section content={description}>Description</Section>
 					<Section content={text}>Text</Section>
 				</div>
