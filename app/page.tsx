@@ -138,7 +138,7 @@ function Section({
 				<IconCopy />
 			</button>
 			<h2 className="text-xl font-semibold">{children}</h2>
-			<p>{content || "No text found"}</p>
+			<p className="whitespace-pre-line">{content || "No text found"}</p>
 		</div>
 	);
 }

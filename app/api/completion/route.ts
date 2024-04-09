@@ -57,7 +57,7 @@ export async function POST(req: Request) {
 				content: [
 					{
 						type: "text",
-						text: "Only respond with the following: a description of the image to be used as alt text, and the text extracted from the image. Begin each one with a triangle symbol (▲ U+25B2). If there is no text, only respond with the description. Do not include any other information.",
+						text: "Respond with two pieces of information, beginning each piece triangle symbol (▲ U+25B2). First, a brief description of the image to be used as alt text. Do not include the image's text in the description. Second, the full raw text extracted from the image. Include newlines where applicable. If there is no text, only respond with the description. Do not include any other information.",
 					},
 					{
 						type: "image",
