@@ -57,45 +57,48 @@ export default function Home() {
 	const [description, text] = completion.split("▲");
 
 	return (
-		<main className="m-auto flex flex-col md:flex-row gap-3">
-			<div
-				className={clsx(
-					"h-72 md:h-96 max-w-xl rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer flex flex-col justify-center items-center p-3 text-lg border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900",
-					{
-						"border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700":
-							!isDraggingOver,
-						"border-blue-300 dark:border-blue-700": isDraggingOver,
-					}
-				)}
-				onDragLeave={handleDragLeave}
-				onDragOver={handleDragOver}
-				onDrop={handleDrop}
-				onClick={() => inputRef.current?.click()}
-			>
-				{isLoading ? (
-					<IconLoader2 className="size-12 pointer-events-none animate-spin" />
-				) : (
-					<IconPhotoUp className="size-12 pointer-events-none" />
-				)}
+		<main className="grow flex items-center justify-center">
+			<div className="flex flex-col lg:flex-row gap-3 w-full justify-center">
+				<div
+					className={clsx(
+						"h-72 md:h-96 lg:max-w-xl rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer flex flex-col justify-center items-center p-3 text-lg border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900 w-full",
+						{
+							"border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700":
+								!isDraggingOver,
+							"border-blue-300 dark:border-blue-700":
+								isDraggingOver,
+						}
+					)}
+					onDragLeave={handleDragLeave}
+					onDragOver={handleDragOver}
+					onDrop={handleDrop}
+					onClick={() => inputRef.current?.click()}
+				>
+					{isLoading ? (
+						<IconLoader2 className="size-12 pointer-events-none animate-spin" />
+					) : (
+						<IconPhotoUp className="size-12 pointer-events-none" />
+					)}
 
-				<p className="mt-5 max-w-96 text-center pointer-events-none">
-					drop <Or /> paste <Or /> click to upload
-				</p>
+					<p className="mt-5 max-w-96 text-center pointer-events-none">
+						drop <Or /> paste <Or /> click to upload
+					</p>
 
-				<input
-					type="file"
-					className="hidden"
-					ref={inputRef}
-					onChange={handleInputChange}
-				/>
-			</div>
-
-			{(isLoading || completion) && (
-				<div className="space-y-3 max-w-96">
-					<Section content={description}>Description</Section>
-					<Section content={text}>Text</Section>
+					<input
+						type="file"
+						className="hidden"
+						ref={inputRef}
+						onChange={handleInputChange}
+					/>
 				</div>
-			)}
+
+				{(isLoading || completion) && (
+					<div className="space-y-3 w-full lg:max-w-96">
+						<Section content={description}>Description</Section>
+						<Section content={text}>Text</Section>
+					</div>
+				)}
+			</div>
 		</main>
 	);
 }
@@ -138,7 +141,9 @@ function Section({
 				<IconCopy />
 			</button>
 			<h2 className="text-xl font-semibold">{children}</h2>
-			<p className="whitespace-pre-line">{content || "No text found"}</p>
+			<p className="whitespace-pre-line">
+				{content?.trim() || "No text found"}
+			</p>
 		</div>
 	);
 }
