@@ -57,7 +57,7 @@ export async function POST(req: Request) {
 				content: [
 					{
 						type: "text",
-						text: "Begin each of the following with a triangle symbol (▲ U+25B2): First, a brief description of the image to be used as alt text. Do not include the image's text in the description. Second, the text extracted from the image, with newlines where applicable. If there is no text in the image, only respond with the description. Do not include any other information.",
+						text: "Begin each of the following with a triangle symbol (▲ U+25B2): First, a brief description of the image to be used as alt text. Do not describe or extract text in the description. Second, the text extracted from the image, with newlines where applicable. Un-obstruct text if it is covered by something, to make it readable. If there is no text in the image, only respond with the description. Do not include any other information. Example: ▲ Lines of code in a text editor.▲ const x = 5; const y = 10; const z = x + y; console.log(z);",
 					},
 					{
 						type: "image",

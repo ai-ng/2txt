@@ -106,10 +106,10 @@ export default function Home() {
 
 					<div
 						className={clsx(
-							"pointer-events-none flex flex-col w-full h-full p-3 gap-4 items-center justify-center text-center absolute",
+							"pointer-events-none flex flex-col w-full h-full p-3 gap-4 items-center justify-center text-center absolute bg-gray-100/70 dark:bg-gray-900/70",
 							{
-								"opacity-0 group-hover:opacity-100 transition ease-in-out bg-gray-100/70 dark:bg-gray-900/70":
-									blobURL,
+								"opacity-0 group-hover:opacity-100 transition ease-in-out":
+									completion,
 							}
 						)}
 					>
