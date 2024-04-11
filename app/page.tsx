@@ -10,14 +10,20 @@ import Image from "next/image";
 export default function Home() {
 	const [isDraggingOver, setIsDraggingOver] = useState(false);
 	const [blobURL, setBlobURL] = useState<string | null>(null);
+	const [finished, setFinished] = useState(false);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const { complete, completion, isLoading } = useCompletion({
-		onError: (e) => toast.error(e.message),
+		onError: (e) => {
+			toast.error(e.message);
+			setBlobURL(null);
+		},
+		onFinish: () => setFinished(true),
 	});
 
 	async function submit(file?: File) {
 		if (!file) return;
 		setBlobURL(URL.createObjectURL(file));
+		setFinished(false);
 		const base64 = await toBase64(file);
 		complete(base64);
 	}
@@ -122,8 +128,12 @@ export default function Home() {
 
 				{(isLoading || completion) && (
 					<div className="space-y-3 w-full lg:max-w-96">
-						<Section content={description}>Description</Section>
-						<Section content={text}>Text</Section>
+						<Section finished={finished} content={description}>
+							Description
+						</Section>
+						<Section finished={finished} content={text}>
+							Text
+						</Section>
 					</div>
 				)}
 			</div>
@@ -150,28 +160,41 @@ function toBase64(file: File): Promise<string> {
 function Section({
 	children,
 	content,
+	finished,
 }: {
 	children: string;
 	content?: string;
+	finished: boolean;
 }) {
 	function copy() {
 		navigator.clipboard.writeText(content || "");
 		toast.success("Copied to clipboard");
 	}
 
+	const loading = !content && !finished;
+
 	return (
 		<div className="p-3 rounded-md bg-gray-100 dark:bg-gray-900 w-full drop-shadow-sm">
-			<button
-				className="float-right rounded-md p-1 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors ease-in-out"
-				onClick={copy}
-				aria-label="Copy to clipboard"
-			>
-				<IconCopy />
-			</button>
+			{content && (
+				<button
+					className="float-right rounded-md p-1 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors ease-in-out"
+					onClick={copy}
+					aria-label="Copy to clipboard"
+				>
+					<IconCopy />
+				</button>
+			)}
 			<h2 className="text-xl font-semibold">{children}</h2>
-			<p className="whitespace-pre-line">
-				{content?.trim() || "No text found"}
-			</p>
+
+			{loading && (
+				<div className="bg-gray-200 dark:bg-gray-800 animate-pulse rounded w-full h-6" />
+			)}
+			{content && <p className="whitespace-pre-line">{content.trim()}</p>}
+			{finished && !content && (
+				<p className="text-gray-700 dark:text-gray-300">
+					No text was found in that image.
+				</p>
+			)}
 		</div>
 	);
 }
