@@ -5,9 +5,11 @@ import clsx from "clsx";
 import { IconCopy, IconLoader2, IconPhotoUp } from "@tabler/icons-react";
 import { useCompletion } from "ai/react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 export default function Home() {
 	const [isDraggingOver, setIsDraggingOver] = useState(false);
+	const [blobURL, setBlobURL] = useState<string | null>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const { complete, completion, isLoading } = useCompletion({
 		onError: (e) => toast.error(e.message),
@@ -15,22 +17,23 @@ export default function Home() {
 
 	async function submit(file?: File) {
 		if (!file) return;
+		setBlobURL(URL.createObjectURL(file));
 		const base64 = await toBase64(file);
 		complete(base64);
 	}
 
-	function handleDragLeave(e: React.DragEvent) {
+	function handleDragLeave() {
 		setIsDraggingOver(false);
 	}
 
-	function handleDragOver(e: React.DragEvent) {
+	function handleDragOver(e: DragEvent) {
 		setIsDraggingOver(true);
 		e.preventDefault();
 		e.stopPropagation();
-		e.dataTransfer.dropEffect = "copy";
+		if (e.dataTransfer) e.dataTransfer.dropEffect = "copy";
 	}
 
-	async function handleDrop(e: React.DragEvent) {
+	async function handleDrop(e: DragEvent) {
 		e.preventDefault();
 		e.stopPropagation();
 		setIsDraggingOver(false);
@@ -41,7 +44,16 @@ export default function Home() {
 
 	useEffect(() => {
 		addEventListener("paste", handlePaste);
-		return () => removeEventListener("paste", handlePaste);
+		addEventListener("drop", handleDrop);
+		addEventListener("dragover", handleDragOver);
+		addEventListener("dragleave", handleDragLeave);
+
+		return () => {
+			removeEventListener("paste", handlePaste);
+			removeEventListener("drop", handleDrop);
+			removeEventListener("dragover", handleDragOver);
+			removeEventListener("dragleave", handleDragLeave);
+		};
 	});
 
 	async function handlePaste(e: ClipboardEvent) {
@@ -57,11 +69,11 @@ export default function Home() {
 	const [description, text] = completion.split("▲");
 
 	return (
-		<main className="grow flex items-center justify-center">
+		<main className="grow flex items-center justify-center py-6">
 			<div className="flex flex-col lg:flex-row gap-3 w-full justify-center">
 				<div
 					className={clsx(
-						"h-72 md:h-96 lg:max-w-xl rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer flex flex-col justify-center items-center p-3 text-lg border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900 w-full",
+						"h-72 md:h-96 lg:max-w-xl rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900 relative w-full group",
 						{
 							"border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700":
 								!isDraggingOver,
@@ -69,20 +81,36 @@ export default function Home() {
 								isDraggingOver,
 						}
 					)}
-					onDragLeave={handleDragLeave}
-					onDragOver={handleDragOver}
-					onDrop={handleDrop}
 					onClick={() => inputRef.current?.click()}
 				>
-					{isLoading ? (
-						<IconLoader2 className="size-12 pointer-events-none animate-spin" />
-					) : (
-						<IconPhotoUp className="size-12 pointer-events-none" />
+					{blobURL && (
+						<Image
+							src={blobURL}
+							unoptimized
+							fill
+							className="object-contain"
+							alt="Uploaded image"
+						/>
 					)}
 
-					<p className="mt-5 max-w-96 text-center pointer-events-none">
-						drop <Or /> paste <Or /> click to upload
-					</p>
+					<div
+						className={clsx(
+							"pointer-events-none flex flex-col w-full h-full p-3 gap-4 items-center justify-center text-center absolute",
+							{
+								"opacity-0 group-hover:opacity-100 transition ease-in-out bg-gray-100/50 dark:bg-gray-900/50":
+									blobURL,
+							}
+						)}
+					>
+						{isLoading ? (
+							<IconLoader2 className="size-12 pointer-events-none animate-spin" />
+						) : (
+							<IconPhotoUp className="size-12 pointer-events-none" />
+						)}
+						<p>
+							drop <Or /> paste <Or /> click to upload
+						</p>
+					</div>
 
 					<input
 						type="file"
