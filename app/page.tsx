@@ -74,6 +74,11 @@ export default function Home() {
 
 	const [description, text] = completion.split("▲");
 
+	function copyBoth() {
+		navigator.clipboard.writeText([description, text].join("\n"));
+		toast.success("Copied to clipboard");
+	}
+
 	return (
 		<main className="grow flex items-center justify-center py-6">
 			<div className="flex flex-col lg:flex-row gap-3 w-full justify-center">
@@ -134,6 +139,14 @@ export default function Home() {
 						<Section finished={finished} content={text}>
 							Text
 						</Section>
+						{finished && text && (
+							<button
+								onClick={copyBoth}
+								className="w-full lg:w-auto rounded-md bg-blue-200 dark:bg-blue-800 px-3 py-2"
+							>
+								Copy Both
+							</button>
+						)}
 					</div>
 				)}
 			</div>
