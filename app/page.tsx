@@ -103,7 +103,7 @@ export default function Home() {
 						className={clsx(
 							"pointer-events-none flex flex-col w-full h-full p-3 gap-4 items-center justify-center text-center absolute",
 							{
-								"opacity-0 group-hover:opacity-100 transition ease-in-out bg-gray-100/50 dark:bg-gray-900/50":
+								"opacity-0 group-hover:opacity-100 transition ease-in-out bg-gray-100/70 dark:bg-gray-900/70":
 									blobURL,
 							}
 						)}
