@@ -118,7 +118,7 @@ export default function Home() {
 
 					<div
 						className={clsx(
-							"pointer-events-none flex flex-col w-full h-full p-3 gap-4 items-center justify-center text-center absolute bg-gray-100/70 dark:bg-gray-900/70",
+							"pointer-events-none flex flex-col w-full h-full p-3 items-center justify-center text-center absolute bg-gray-100/70 dark:bg-gray-900/70",
 							{
 								"opacity-0 group-hover:opacity-100 transition ease-in-out":
 									completion,
@@ -126,12 +126,16 @@ export default function Home() {
 						)}
 					>
 						{isLoading ? (
-							<IconLoader2 className="size-12 pointer-events-none animate-spin" />
+							<IconLoader2 className="size-12 pointer-events-none animate-spin mb-4" />
 						) : (
-							<IconPhotoUp className="size-12 pointer-events-none" />
+							<IconPhotoUp className="size-12 pointer-events-none mb-4" />
 						)}
 						<p>
-							drop <Or /> paste <Or /> click to upload
+							drop <Or /> paste <Or /> <span>click</span> to
+							upload
+						</p>
+						<p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
+							(images are not stored)
 						</p>
 					</div>
 
@@ -140,6 +144,7 @@ export default function Home() {
 						className="hidden"
 						ref={inputRef}
 						onChange={handleInputChange}
+						accept="image/jpeg, image/png, image/gif, image/webp"
 					/>
 				</div>
 
