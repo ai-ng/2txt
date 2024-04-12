@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 	const { prompt } = await req.json();
 
 	// roughly 4.5MB in base64
-	if (prompt.length > 7_000_000) {
+	if (prompt.length > 6_464_471) {
 		return new Response("Image too large, maximum file size is 4.5MB.", {
 			status: 400,
 		});

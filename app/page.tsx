@@ -34,9 +34,15 @@ export default function Home() {
 			return toast.error("Image too large, maximum file size is 4.5MB.");
 		}
 
+		const base64 = await toBase64(file);
+
+		// roughly 4.5MB in base64
+		if (base64.length > 6_464_471) {
+			return toast.error("Image too large, maximum file size is 4.5MB.");
+		}
+
 		setBlobURL(URL.createObjectURL(file));
 		setFinished(false);
-		const base64 = await toBase64(file);
 		complete(base64);
 	}
 
