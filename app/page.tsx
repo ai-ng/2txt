@@ -7,6 +7,7 @@ import { useCompletion } from "ai/react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { isSupportedImageType } from "@/app/api/completion/route";
+import { useLongPress } from "use-long-press";
 
 export default function Home() {
 	const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -21,7 +22,7 @@ export default function Home() {
 		onFinish: () => setFinished(true),
 	});
 
-	async function submit(file?: File) {
+	async function submit(file?: File | Blob) {
 		if (!file) return;
 
 		if (!isSupportedImageType(file.type)) {
@@ -97,8 +98,35 @@ export default function Home() {
 		toast.success("Copied to clipboard");
 	}
 
+	const bind = useLongPress(async () => {
+		try {
+			if (!navigator.clipboard.read)
+				return toast.error(
+					"Your browser does not support reading from the clipboard."
+				);
+
+			const items = await navigator.clipboard.read();
+			const item = items[0];
+
+			const supportedType = item.types.find(isSupportedImageType);
+			if (!supportedType) {
+				return toast.error(
+					"Unsupported format. Only JPEG, PNG, GIF, and WEBP files are supported."
+				);
+			}
+
+			const blob = await item.getType(supportedType);
+			submit(blob);
+		} catch {
+			toast.error("Permission to read clipboard was denied.");
+		}
+	});
+
 	return (
-		<main className="grow flex items-center justify-center py-6">
+		<main
+			className="grow flex items-center justify-center py-6"
+			{...bind()}
+		>
 			<div className="flex flex-col lg:flex-row gap-3 w-full justify-center">
 				<div
 					className={clsx(
@@ -136,9 +164,11 @@ export default function Home() {
 						) : (
 							<IconPhotoUp className="size-12 pointer-events-none mb-4" />
 						)}
-						<p>
-							drop <Or /> paste <Or /> <span>click</span> to
-							upload
+						<p className="hidden lg:block">
+							drop <Or /> paste <Or /> click to upload
+						</p>
+						<p className="lg:hidden">
+							tap to upload <Or /> hold to paste
 						</p>
 						<p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
 							(images are not stored)
@@ -181,7 +211,7 @@ const Or = () => (
 	<span className="text-gray-600 dark:text-gray-400 font-mono">or</span>
 );
 
-function toBase64(file: File): Promise<string> {
+function toBase64(file: File | Blob): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();
 		reader.readAsDataURL(file);
