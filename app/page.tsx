@@ -6,7 +6,7 @@ import { IconCopy, IconLoader2, IconPhotoUp } from "@tabler/icons-react";
 import { useCompletion } from "ai/react";
 import { toast } from "sonner";
 import Image from "next/image";
-import { isSupportedImageType } from "@/app/api/completion/route";
+import { isSupportedImageType } from "@/app/utils";
 import { useLongPress } from "use-long-press";
 
 export default function Home() {

@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { AnthropicStream, StreamingTextResponse } from "ai";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { isSupportedImageType } from "@/app/utils";
 
 const anthropic = new Anthropic();
 
@@ -93,18 +94,4 @@ function decodeBase64Image(dataString: string) {
 		type: matches?.[1],
 		data: matches?.[2],
 	};
-}
-
-type SupportedImageTypes =
-	| "image/jpeg"
-	| "image/png"
-	| "image/gif"
-	| "image/webp";
-
-export function isSupportedImageType(
-	type: string
-): type is SupportedImageTypes {
-	return ["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
-		type
-	);
 }
