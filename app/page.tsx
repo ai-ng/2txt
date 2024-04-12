@@ -130,7 +130,7 @@ export default function Home() {
 			<div className="flex flex-col lg:flex-row gap-3 w-full justify-center">
 				<div
 					className={clsx(
-						"h-72 md:h-96 lg:max-w-xl rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900 relative w-full group",
+						"h-72 md:h-96 lg:max-w-xl rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900 relative w-full group select-none",
 						{
 							"border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700":
 								!isDraggingOver,
