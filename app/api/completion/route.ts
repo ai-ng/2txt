@@ -1,5 +1,3 @@
-"use server";
-
 import Anthropic from "@anthropic-ai/sdk";
 import { AnthropicStream, StreamingTextResponse } from "ai";
 import { Ratelimit } from "@upstash/ratelimit";
@@ -31,9 +29,9 @@ export async function POST(req: Request) {
 
 	const { prompt } = await req.json();
 
-	// roughly 5MB in base64
-	if (prompt.length > 7_182_745) {
-		return new Response("Image too large, maximum file size is 5MB.", {
+	// roughly 4.5MB in base64
+	if (prompt.length > 7_000_000) {
+		return new Response("Image too large, maximum file size is 4.5MB.", {
 			status: 400,
 		});
 	}
@@ -45,7 +43,7 @@ export async function POST(req: Request) {
 
 	if (!isSupportedImageType(type)) {
 		return new Response(
-			"Unsupported image format. Only JPEG, PNG, GIF, and WEBP files are supported.",
+			"Unsupported format. Only JPEG, PNG, GIF, and WEBP files are supported.",
 			{ status: 400 }
 		);
 	}
@@ -103,7 +101,9 @@ type SupportedImageTypes =
 	| "image/gif"
 	| "image/webp";
 
-function isSupportedImageType(type: string): type is SupportedImageTypes {
+export function isSupportedImageType(
+	type: string
+): type is SupportedImageTypes {
 	return ["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
 		type
 	);

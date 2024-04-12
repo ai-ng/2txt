@@ -6,6 +6,7 @@ import { IconCopy, IconLoader2, IconPhotoUp } from "@tabler/icons-react";
 import { useCompletion } from "ai/react";
 import { toast } from "sonner";
 import Image from "next/image";
+import { isSupportedImageType } from "@/app/api/completion/route";
 
 export default function Home() {
 	const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -22,6 +23,17 @@ export default function Home() {
 
 	async function submit(file?: File) {
 		if (!file) return;
+
+		if (!isSupportedImageType(file.type)) {
+			return toast.error(
+				"Unsupported format. Only JPEG, PNG, GIF, and WEBP files are supported."
+			);
+		}
+
+		if (file.size > 4.5 * 1024 * 1024) {
+			return toast.error("Image too large, maximum file size is 4.5MB.");
+		}
+
 		setBlobURL(URL.createObjectURL(file));
 		setFinished(false);
 		const base64 = await toBase64(file);
