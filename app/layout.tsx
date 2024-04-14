@@ -17,15 +17,17 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body
-				className={`${GeistSans.variable} ${GeistMono.variable} font-sans bg-gray-50 dark:bg-gray-950 text-black dark:text-white px-3 py-10 min-h-dvh flex flex-col`}
+				className={`${GeistSans.variable} ${GeistMono.variable} font-mono bg-gray-50 dark:bg-gray-950 text-black dark:text-white px-3 lg:px-10 py-10 min-h-dvh flex flex-col`}
 			>
-				<h1 className="font-semibold text-center text-xl bg-gradient-to-b dark:from-gray-50 dark:to-gray-200 from-gray-950 to-gray-800 bg-clip-text text-transparent">
+				<h1 className="font-semibold text-center text-2xl bg-gradient-to-b dark:from-gray-50 dark:to-gray-200 from-gray-950 to-gray-800 bg-clip-text text-transparent">
 					2txt
 				</h1>
 
-				{children}
+				<main className="grow flex flex-col lg:flex-row gap-6 py-10">
+					{children}
+				</main>
 
-				<footer className="text-center text-sm dark:text-gray-400 text-gray-600 font-mono">
+				<footer className="lg:flex flex-row justify-between text-center text-sm dark:text-gray-400 text-gray-600">
 					<p>
 						<A href="https://github.com/ai-ng">ai-ng</A> /{" "}
 						<A href="https://nickoates.com">nick oates</A>

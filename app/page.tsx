@@ -7,7 +7,6 @@ import { useCompletion } from "ai/react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { isSupportedImageType } from "@/app/utils";
-import { useLongPress } from "use-long-press";
 
 export default function Home() {
 	const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -98,112 +97,86 @@ export default function Home() {
 		toast.success("Copied to clipboard");
 	}
 
-	const bind = useLongPress(async () => {
-		try {
-			if (!navigator.clipboard.read)
-				return toast.error(
-					"Your browser does not support reading from the clipboard."
-				);
-
-			const items = await navigator.clipboard.read();
-			const item = items[0];
-
-			const supportedType = item.types.find(isSupportedImageType);
-			if (!supportedType) {
-				return toast.error(
-					"Unsupported format. Only JPEG, PNG, GIF, and WEBP files are supported."
-				);
-			}
-
-			const blob = await item.getType(supportedType);
-			submit(blob);
-		} catch {
-			toast.error("Permission to read clipboard was denied.");
-		}
-	});
-
 	return (
-		<main
-			className="grow flex items-center justify-center py-6"
-			{...bind()}
-		>
-			<div className="flex flex-col lg:flex-row gap-3 w-full justify-center">
+		<>
+			<div
+				className={clsx(
+					"rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900 relative group select-none grow pointer-events-none lg:pointer-events-auto",
+					{
+						"border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700":
+							!isDraggingOver,
+						"border-blue-300 dark:border-blue-700": isDraggingOver,
+					}
+				)}
+				onClick={() => inputRef.current?.click()}
+			>
+				{blobURL && (
+					<Image
+						src={blobURL}
+						unoptimized
+						fill
+						className="object-contain"
+						alt="Uploaded image"
+					/>
+				)}
+
 				<div
 					className={clsx(
-						"h-72 md:h-96 lg:max-w-xl rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900 relative w-full group select-none",
+						"flex flex-col w-full h-full p-3 items-center justify-center text-center absolute bg-gray-100/70 dark:bg-gray-900/70 text-lg",
 						{
-							"border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700":
-								!isDraggingOver,
-							"border-blue-300 dark:border-blue-700":
-								isDraggingOver,
+							"opacity-0 group-hover:opacity-100 transition ease-in-out":
+								completion,
 						}
 					)}
-					onClick={() => inputRef.current?.click()}
 				>
-					{blobURL && (
-						<Image
-							src={blobURL}
-							unoptimized
-							fill
-							className="object-contain"
-							alt="Uploaded image"
+					<p className="font-bold mb-4">Image to text, fast.</p>
+					<p className="hidden lg:block">
+						Drop or paste anywhere, or click to upload.
+					</p>
+
+					<div className="w-56 space-y-4 lg:hidden pointer-events-auto">
+						<button className="rounded-full w-full py-3 bg-black dark:bg-white text-white dark:text-black">
+							Tap to upload
+						</button>
+
+						<input
+							type="text"
+							readOnly
+							placeholder="Hold to paste"
+							onClick={(e) => e.stopPropagation()}
+							className="text-center w-full rounded-full py-3 bg-gray-200 dark:bg-gray-800 placeholder-black dark:placeholder-white focus:bg-white dark:focus:bg-black focus:placeholder-gray-700 dark:focus:placeholder-gray-300 transition-colors ease-in-out focus:outline-none border-2 focus:border-blue-300 dark:focus:border-blue-700 border-transparent"
 						/>
-					)}
-
-					<div
-						className={clsx(
-							"pointer-events-none flex flex-col w-full h-full p-3 items-center justify-center text-center absolute bg-gray-100/70 dark:bg-gray-900/70",
-							{
-								"opacity-0 group-hover:opacity-100 transition ease-in-out":
-									completion,
-							}
-						)}
-					>
-						{isLoading ? (
-							<IconLoader2 className="size-12 pointer-events-none animate-spin mb-4" />
-						) : (
-							<IconPhotoUp className="size-12 pointer-events-none mb-4" />
-						)}
-						<p className="hidden lg:block">
-							drop <Or /> paste <Or /> click to upload
-						</p>
-						<p className="lg:hidden">
-							tap to upload <Or /> hold to paste
-						</p>
-						<p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
-							(images are not stored)
-						</p>
 					</div>
-
-					<input
-						type="file"
-						className="hidden"
-						ref={inputRef}
-						onChange={handleInputChange}
-						accept="image/jpeg, image/png, image/gif, image/webp"
-					/>
 				</div>
 
-				{(isLoading || completion) && (
-					<div className="space-y-3 w-full lg:max-w-96">
-						<Section finished={finished} content={description}>
-							Description
-						</Section>
-						<Section finished={finished} content={text}>
-							Text
-						</Section>
-						{finished && text && (
-							<button
-								onClick={copyBoth}
-								className="w-full lg:w-auto rounded-md bg-blue-200 dark:bg-blue-800 px-3 py-2"
-							>
-								Copy Both
-							</button>
-						)}
-					</div>
-				)}
+				<input
+					type="file"
+					className="hidden"
+					ref={inputRef}
+					onChange={handleInputChange}
+					accept="image/jpeg, image/png, image/gif, image/webp"
+				/>
 			</div>
-		</main>
+
+			{(isLoading || completion) && (
+				<div className="space-y-3 basis-1/2 p-3 rounded-md bg-gray-100 dark:bg-gray-900 w-full drop-shadow-sm">
+					<Section finished={finished} content={description}>
+						Description
+					</Section>
+					<Section finished={finished} content={text}>
+						Text
+					</Section>
+					{finished && text && (
+						<button
+							onClick={copyBoth}
+							className="w-full lg:w-auto rounded-md bg-blue-200 dark:bg-blue-800 px-3 py-2"
+						>
+							Copy Both
+						</button>
+					)}
+				</div>
+			)}
+		</>
 	);
 }
 
@@ -240,7 +213,7 @@ function Section({
 	const loading = !content && !finished;
 
 	return (
-		<div className="p-3 rounded-md bg-gray-100 dark:bg-gray-900 w-full drop-shadow-sm">
+		<div>
 			{content && (
 				<button
 					className="float-right rounded-md p-1 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors ease-in-out"
