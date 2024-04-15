@@ -141,7 +141,7 @@ export default function Home() {
 
 						<input
 							type="text"
-							// readOnly
+							onKeyDown={(e) => e.preventDefault()}
 							placeholder="Hold to paste"
 							onClick={(e) => e.stopPropagation()}
 							className="text-center w-full rounded-full py-3 bg-gray-200 dark:bg-gray-800 placeholder-black dark:placeholder-white focus:bg-white dark:focus:bg-black focus:placeholder-gray-700 dark:focus:placeholder-gray-300 transition-colors ease-in-out focus:outline-none border-2 focus:border-blue-300 dark:focus:border-blue-700 border-transparent"
