@@ -223,14 +223,18 @@ function Section({
 					<IconCopy />
 				</button>
 			)}
-			<h2 className="text-xl font-semibold">{children}</h2>
+			<h2 className="text-xl font-semibold select-none">{children}</h2>
 
 			{loading && (
 				<div className="bg-gray-200 dark:bg-gray-800 animate-pulse rounded w-full h-6" />
 			)}
-			{content && <p className="whitespace-pre-line">{content.trim()}</p>}
+			{content && (
+				<p className="whitespace-pre-line break-words">
+					{content.trim()}
+				</p>
+			)}
 			{finished && !content && (
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-gray-700 dark:text-gray-300 select-none">
 					No text was found in that image.
 				</p>
 			)}
