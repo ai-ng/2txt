@@ -17,13 +17,13 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body
-				className={`${GeistSans.variable} ${GeistMono.variable} font-mono bg-gray-50 dark:bg-gray-950 text-black dark:text-white px-3 lg:px-10 py-10 min-h-dvh flex flex-col`}
+				className={`${GeistSans.variable} ${GeistMono.variable} font-mono bg-gray-50 dark:bg-gray-950 text-black dark:text-white px-3 lg:px-10 py-4 lg:py-10 min-h-dvh flex flex-col`}
 			>
 				<h1 className="font-semibold text-center text-2xl bg-gradient-to-b dark:from-gray-50 dark:to-gray-200 from-gray-950 to-gray-800 bg-clip-text text-transparent select-none">
 					2txt
 				</h1>
 
-				<main className="grow flex flex-col lg:flex-row gap-6 py-10">
+				<main className="grow flex flex-col lg:flex-row gap-6 py-4 lg:py-10">
 					{children}
 				</main>
 
