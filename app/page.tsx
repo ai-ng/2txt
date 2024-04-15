@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import { IconCopy } from "@tabler/icons-react";
+import { IconCopy, IconLoader2 } from "@tabler/icons-react";
 import { useCompletion } from "ai/react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -125,28 +125,36 @@ export default function Home() {
 						"flex flex-col w-full h-full p-3 items-center justify-center text-center absolute bg-gray-100/70 dark:bg-gray-900/70 text-lg",
 						{
 							"opacity-0 group-hover:opacity-100 transition ease-in-out":
-								isLoading || completion,
+								completion,
 						}
 					)}
 				>
-					<p className="font-bold mb-4">Image to text, fast.</p>
-					<p className="hidden [@media(hover:hover)]:block">
-						Drop or paste anywhere, or click to upload.
-					</p>
+					{isLoading ? (
+						<IconLoader2 className="animate-spin size-12" />
+					) : (
+						<>
+							<p className="font-bold mb-4">
+								Image to text, fast.
+							</p>
+							<p className="hidden [@media(hover:hover)]:block">
+								Drop or paste anywhere, or click to upload.
+							</p>
 
-					<div className="w-56 space-y-4 [@media(hover:hover)]:hidden pointer-events-auto">
-						<button className="rounded-full w-full py-3 bg-black dark:bg-white text-white dark:text-black">
-							Tap to upload
-						</button>
+							<div className="w-56 space-y-4 [@media(hover:hover)]:hidden pointer-events-auto">
+								<button className="rounded-full w-full py-3 bg-black dark:bg-white text-white dark:text-black">
+									Tap to upload
+								</button>
 
-						<input
-							type="text"
-							onKeyDown={(e) => e.preventDefault()}
-							placeholder="Hold to paste"
-							onClick={(e) => e.stopPropagation()}
-							className="text-center w-full rounded-full py-3 bg-gray-200 dark:bg-gray-800 placeholder-black dark:placeholder-white focus:bg-white dark:focus:bg-black focus:placeholder-gray-700 dark:focus:placeholder-gray-300 transition-colors ease-in-out focus:outline-none border-2 focus:border-blue-300 dark:focus:border-blue-700 border-transparent"
-						/>
-					</div>
+								<input
+									type="text"
+									onKeyDown={(e) => e.preventDefault()}
+									placeholder="Hold to paste"
+									onClick={(e) => e.stopPropagation()}
+									className="text-center w-full rounded-full py-3 bg-gray-200 dark:bg-gray-800 placeholder-black dark:placeholder-white focus:bg-white dark:focus:bg-black focus:placeholder-gray-700 dark:focus:placeholder-gray-300 transition-colors ease-in-out focus:outline-none border-2 focus:border-blue-300 dark:focus:border-blue-700 border-transparent"
+								/>
+							</div>
+						</>
+					)}
 				</div>
 
 				<input
