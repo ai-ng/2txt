@@ -39,7 +39,7 @@ export default function RootLayout({
 					</p>
 					<p>
 						<A href="https://github.com/ai-ng/2txt">source</A> /{" "}
-						<A href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fai-ng%2F2txt&env=ANTHROPIC_API_KEY&envDescription=Your%20Anthropic%20API%20key%20from%20https%3A%2F%2Fconsole.anthropic.com%2F&envLink=https%3A%2F%2Fconsole.anthropic.com%2F&project-name=2txt&repository-name=2txt&demo-title=2txt&demo-description=Image%20to%20text%2C%20fast.&demo-url=https%3A%2F%2F2txt.vercel.app">
+						<A href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fai-ng%2F2txt&env=ANTHROPIC_API_KEY&envDescription=Your%20Anthropic%20API%20key%20from%20https%3A%2F%2Fconsole.anthropic.com&envLink=https%3A%2F%2Fconsole.anthropic.com%2F&project-name=2txt&repository-name=2txt&demo-title=2txt&demo-description=Image%20to%20text%2C%20fast.&demo-url=https%3A%2F%2F2txt.vercel.app&demo-image=https%3A%2F%2F2txt.vercel.app%2Fopengraph-image.png">
 							deploy
 						</A>
 					</p>
