@@ -7,6 +7,7 @@ import { useCompletion } from "ai/react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { isSupportedImageType } from "@/app/utils";
+import { track } from "@vercel/analytics";
 
 export default function Home() {
 	const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -58,6 +59,8 @@ export default function Home() {
 	}
 
 	async function handleDrop(e: DragEvent) {
+		track("Drop");
+
 		e.preventDefault();
 		e.stopPropagation();
 		setIsDraggingOver(false);
@@ -81,11 +84,13 @@ export default function Home() {
 	});
 
 	async function handlePaste(e: ClipboardEvent) {
+		track("Paste");
 		const file = e.clipboardData?.files?.[0];
 		submit(file);
 	}
 
 	async function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+		track("Upload");
 		const file = e.target.files?.[0];
 		submit(file);
 	}
