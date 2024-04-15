@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import { IconCopy, IconLoader2, IconPhotoUp } from "@tabler/icons-react";
+import { IconCopy } from "@tabler/icons-react";
 import { useCompletion } from "ai/react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -179,10 +179,6 @@ export default function Home() {
 		</>
 	);
 }
-
-const Or = () => (
-	<span className="text-gray-600 dark:text-gray-400 font-mono">or</span>
-);
 
 function toBase64(file: File | Blob): Promise<string> {
 	return new Promise((resolve, reject) => {
