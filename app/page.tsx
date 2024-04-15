@@ -115,7 +115,7 @@ export default function Home() {
 						src={blobURL}
 						unoptimized
 						fill
-						className="object-contain min-h-16"
+						className="lg:object-contain object-cover min-h-16"
 						alt="Uploaded image"
 					/>
 				)}
