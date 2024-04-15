@@ -101,7 +101,7 @@ export default function Home() {
 		<>
 			<div
 				className={clsx(
-					"rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900 relative group select-none grow pointer-events-none lg:pointer-events-auto",
+					"rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900 relative group select-none grow pointer-events-none [@media(hover:hover)]:pointer-events-auto",
 					{
 						"border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700":
 							!isDraggingOver,
@@ -130,11 +130,11 @@ export default function Home() {
 					)}
 				>
 					<p className="font-bold mb-4">Image to text, fast.</p>
-					<p className="hidden lg:block">
+					<p className="hidden [@media(hover:hover)]:block">
 						Drop or paste anywhere, or click to upload.
 					</p>
 
-					<div className="w-56 space-y-4 lg:hidden pointer-events-auto">
+					<div className="w-56 space-y-4 [@media(hover:hover)]:hidden pointer-events-auto">
 						<button className="rounded-full w-full py-3 bg-black dark:bg-white text-white dark:text-black">
 							Tap to upload
 						</button>
