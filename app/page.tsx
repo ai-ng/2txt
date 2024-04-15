@@ -219,7 +219,9 @@ function Section({
 					<IconCopy />
 				</button>
 			)}
-			<h2 className="text-xl font-semibold select-none">{children}</h2>
+			<h2 className="font-semibold select-none text-gray-700 dark:text-gray-300">
+				{children}
+			</h2>
 
 			{loading && (
 				<div className="bg-gray-200 dark:bg-gray-800 animate-pulse rounded w-full h-6" />
