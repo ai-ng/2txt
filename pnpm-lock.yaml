@@ -17,6 +17,9 @@ dependencies:
   '@upstash/redis':
     specifier: ^1.29.0
     version: 1.29.0
+  '@vercel/analytics':
+    specifier: ^1.2.2
+    version: 1.2.2(next@14.2.0)(react@18.2.0)
   ai:
     specifier: ^3.0.21
     version: 3.0.21(react@18.2.0)(solid-js@1.8.16)(svelte@4.2.12)(vue@3.4.21)(zod@3.22.4)
@@ -517,6 +520,22 @@ packages:
     resolution: {integrity: sha512-kbO5fgMAeUzErnA/SOtaSbAa0dguYhhBT4MZHJ1O8gVl4iK754aC9+rIYY5hsp4nlxeCGfnIDkWpof991c9jjA==}
     dependencies:
       crypto-js: 4.2.0
+    dev: false
+
+  /@vercel/analytics@1.2.2(next@14.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-X0rctVWkQV1e5Y300ehVNqpOfSOufo7ieA5PIdna8yX/U7Vjz0GFsGf4qvAhxV02uQ2CVt7GYcrFfddXXK2Y4A==}
+    peerDependencies:
+      next: '>= 13'
+      react: ^18 || ^19
+    peerDependenciesMeta:
+      next:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      next: 14.2.0(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      server-only: 0.0.1
     dev: false
 
   /@vue/compiler-core@3.4.21:
@@ -2893,6 +2912,10 @@ packages:
   /seroval@1.0.5:
     resolution: {integrity: sha512-TM+Z11tHHvQVQKeNlOUonOWnsNM+2IBwZ4vwoi4j3zKzIpc5IDw8WPwCfcc8F17wy6cBcJGbZbFOR0UCuTZHQA==}
     engines: {node: '>=10'}
+    dev: false
+
+  /server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
     dev: false
 
   /set-function-length@1.2.2:

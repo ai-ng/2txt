@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
 	title: "2txt",
@@ -46,6 +47,7 @@ export default function RootLayout({
 				</footer>
 
 				<Toaster richColors theme="system" />
+				<Analytics />
 			</body>
 		</html>
 	);
