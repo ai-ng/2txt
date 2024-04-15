@@ -177,9 +177,9 @@ export default function Home() {
 					{finished && text && (
 						<button
 							onClick={copyBoth}
-							className="w-full lg:w-auto rounded-md bg-blue-200 dark:bg-blue-800 px-3 py-2"
+							className="w-full lg:w-auto rounded-md underline hover:no-underline hover:bg-gray-200 dark:hover:bg-gray-800 flex items-center gap-2"
 						>
-							Copy Both
+							<IconCopy className="size-4" /> Copy All
 						</button>
 					)}
 				</div>
