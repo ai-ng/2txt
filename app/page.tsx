@@ -227,7 +227,7 @@ function Section({
 					<IconCopy />
 				</button>
 			)}
-			<h2 className="font-semibold select-none text-gray-700 dark:text-gray-300">
+			<h2 className="font-semibold select-none text-gray-600 dark:text-gray-400">
 				{children}
 			</h2>
 
@@ -240,7 +240,7 @@ function Section({
 				</p>
 			)}
 			{finished && !content && (
-				<p className="text-gray-700 dark:text-gray-300 select-none">
+				<p className="text-gray-600 dark:text-gray-400 select-none">
 					No text was found in that image.
 				</p>
 			)}
