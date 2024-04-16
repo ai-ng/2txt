@@ -1,4 +1,4 @@
-# 2xt
+# 2txt
 
 Image to text, fast. Built with the [Vercel AI SDK](https://sdk.vercel.ai), [Claude](https://claude.ai/), and [Next.js](https://nextjs.org).
 
