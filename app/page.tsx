@@ -244,7 +244,7 @@ function Section({
 				<div className="bg-gray-200 dark:bg-gray-800 animate-pulse rounded w-full h-6" />
 			)}
 			{content && (
-				<p className="whitespace-pre-line break-words">
+				<p className="whitespace-pre-wrap break-words">
 					{content.trim()}
 				</p>
 			)}
