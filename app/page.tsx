@@ -98,7 +98,9 @@ export default function Home() {
 	const [description, text] = completion.split("▲");
 
 	function copyBoth() {
-		navigator.clipboard.writeText([description, text].join("\n"));
+		navigator.clipboard.writeText(
+			[description.trim(), text.trim()].join("\n\n")
+		);
 		toast.success("Copied to clipboard");
 	}
 
