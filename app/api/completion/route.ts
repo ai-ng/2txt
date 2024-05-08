@@ -1,10 +1,8 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { AnthropicStream, StreamingTextResponse } from "ai";
+import { streamText, StreamingTextResponse } from "ai";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { isSupportedImageType } from "@/app/utils";
-
-const anthropic = new Anthropic();
+import { anthropic } from "@ai-sdk/anthropic";
 
 const ratelimit =
 	process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
@@ -37,19 +35,19 @@ export async function POST(req: Request) {
 		});
 	}
 
-	const { type, data } = decodeBase64Image(prompt);
+	const { mimeType, image } = decodeBase64Image(prompt);
 
-	if (!type || !data)
+	if (!mimeType || !image)
 		return new Response("Invalid image data", { status: 400 });
 
-	if (!isSupportedImageType(type)) {
+	if (!isSupportedImageType(mimeType)) {
 		return new Response(
 			"Unsupported format. Only JPEG, PNG, GIF, and WEBP files are supported.",
 			{ status: 400 }
 		);
 	}
 
-	const response = await anthropic.messages.create({
+	const result = await streamText({
 		messages: [
 			{
 				role: "user",
@@ -60,11 +58,8 @@ export async function POST(req: Request) {
 					},
 					{
 						type: "image",
-						source: {
-							type: "base64",
-							media_type: type,
-							data,
-						},
+						image,
+						mimeType,
 					},
 				],
 			},
@@ -78,20 +73,18 @@ export async function POST(req: Request) {
 				],
 			},
 		],
-		model: "claude-3-haiku-20240307",
-		stream: true,
-		max_tokens: 300,
+		model: anthropic("claude-3-haiku-20240307"),
+		maxTokens: 300,
 	});
 
-	const stream = AnthropicStream(response);
-	return new StreamingTextResponse(stream);
+	return new StreamingTextResponse(result.toAIStream());
 }
 
 function decodeBase64Image(dataString: string) {
 	const matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
 
 	return {
-		type: matches?.[1],
-		data: matches?.[2],
+		mimeType: matches?.[1],
+		image: matches?.[2],
 	};
 }
