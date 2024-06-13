@@ -13,6 +13,7 @@ const ratelimit =
 				}),
 				limiter: Ratelimit.slidingWindow(5, "30 m"),
 				analytics: true,
+				prefix: "2txt",
 		  })
 		: false;
 
