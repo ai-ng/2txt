@@ -12,7 +12,6 @@ const ratelimit =
 					token: process.env.KV_REST_API_TOKEN,
 				}),
 				limiter: Ratelimit.slidingWindow(5, "30 m"),
-				analytics: true,
 				prefix: "2txt",
 		  })
 		: false;
