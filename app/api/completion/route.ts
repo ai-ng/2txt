@@ -1,31 +1,8 @@
 import { streamText, StreamingTextResponse } from "ai";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
 import { isSupportedImageType } from "@/app/utils";
 import { anthropic } from "@ai-sdk/anthropic";
 
-const ratelimit =
-	process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
-		? new Ratelimit({
-				redis: new Redis({
-					url: process.env.KV_REST_API_URL,
-					token: process.env.KV_REST_API_TOKEN,
-				}),
-				limiter: Ratelimit.slidingWindow(5, "30 m"),
-				prefix: "2txt",
-		  })
-		: false;
-
 export async function POST(req: Request) {
-	if (ratelimit) {
-		const ip = req.headers.get("x-real-ip") ?? "local";
-		const rl = await ratelimit.limit(ip);
-
-		if (!rl.success) {
-			return new Response("Rate limit exceeded", { status: 429 });
-		}
-	}
-
 	const { prompt } = await req.json();
 
 	// roughly 4.5MB in base64
