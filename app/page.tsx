@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { IconCopy, IconLoader2 } from "@tabler/icons-react";
-import { useCompletion } from "ai/react";
+import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { toast } from "sonner";
 import Image from "next/image";
-import { isSupportedImageType } from "@/app/utils";
+import { isSupportedImageType, schema } from "@/app/utils";
 import { track } from "@vercel/analytics";
 
 export default function Home() {
@@ -14,7 +14,9 @@ export default function Home() {
 	const [blobURL, setBlobURL] = useState<string | null>(null);
 	const [finished, setFinished] = useState(false);
 	const inputRef = useRef<HTMLInputElement>(null);
-	const { complete, completion, isLoading } = useCompletion({
+	const { submit, object, isLoading } = useObject({
+		api: "/api",
+		schema,
 		onError: (e) => {
 			toast.error(e.message);
 			setBlobURL(null);
@@ -22,7 +24,7 @@ export default function Home() {
 		onFinish: () => setFinished(true),
 	});
 
-	async function submit(file?: File | Blob) {
+	async function uploadImage(file?: File | Blob) {
 		if (!file) return;
 
 		if (!isSupportedImageType(file.type)) {
@@ -44,7 +46,7 @@ export default function Home() {
 
 		setBlobURL(URL.createObjectURL(file));
 		setFinished(false);
-		complete(base64);
+		submit(base64);
 	}
 
 	function handleDragLeave() {
@@ -66,7 +68,7 @@ export default function Home() {
 		setIsDraggingOver(false);
 
 		const file = e.dataTransfer?.files?.[0];
-		submit(file);
+		uploadImage(file);
 	}
 
 	useEffect(() => {
@@ -86,20 +88,18 @@ export default function Home() {
 	async function handlePaste(e: ClipboardEvent) {
 		track("Paste");
 		const file = e.clipboardData?.files?.[0];
-		submit(file);
+		uploadImage(file);
 	}
 
 	async function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
 		track("Upload");
 		const file = e.target.files?.[0];
-		submit(file);
+		uploadImage(file);
 	}
-
-	const [description, text] = completion.split("▲");
 
 	function copyBoth() {
 		navigator.clipboard.writeText(
-			[description.trim(), text.trim()].join("\n\n")
+			[object?.description?.trim(), object?.text?.trim()].join("\n\n")
 		);
 		toast.success("Copied to clipboard");
 	}
@@ -108,7 +108,7 @@ export default function Home() {
 		<>
 			<div
 				className={clsx(
-					"rounded-lg border-4 drop-shadow-sm text-gray-700 dark:text-gray-300 cursor-pointer border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900 relative group select-none grow pointer-events-none [@media(hover:hover)]:pointer-events-auto",
+					"rounded-lg border-4 drop-shadow-xs text-gray-700 dark:text-gray-300 cursor-pointer border-dashed transition-colors ease-in-out bg-gray-100 dark:bg-gray-900 relative group select-none grow pointer-events-none [@media(hover:hover)]:pointer-events-auto",
 					{
 						"border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700":
 							!isDraggingOver,
@@ -132,7 +132,7 @@ export default function Home() {
 						"flex flex-col w-full h-full p-3 items-center justify-center text-center absolute bg-gray-100/70 dark:bg-gray-900/70 text-lg",
 						{
 							"opacity-0 group-hover:opacity-100 transition ease-in-out":
-								completion,
+								object?.description,
 						}
 					)}
 				>
@@ -140,9 +140,7 @@ export default function Home() {
 						<IconLoader2 className="animate-spin size-12" />
 					) : (
 						<>
-							<p className="font-bold mb-4">
-								Image to text, fast.
-							</p>
+							<p className="font-bold mb-4">Image to text, fast.</p>
 							<p className="hidden [@media(hover:hover)]:block">
 								Drop or paste anywhere, or click to upload.
 							</p>
@@ -157,7 +155,7 @@ export default function Home() {
 									onKeyDown={(e) => e.preventDefault()}
 									placeholder="Hold to paste"
 									onClick={(e) => e.stopPropagation()}
-									className="text-center w-full rounded-full py-3 bg-gray-200 dark:bg-gray-800 placeholder-black dark:placeholder-white focus:bg-white dark:focus:bg-black focus:placeholder-gray-700 dark:focus:placeholder-gray-300 transition-colors ease-in-out focus:outline-none border-2 focus:border-blue-300 dark:focus:border-blue-700 border-transparent"
+									className="text-center w-full rounded-full py-3 bg-gray-200 dark:bg-gray-800 placeholder-black dark:placeholder-white focus:bg-white dark:focus:bg-black focus:placeholder-gray-700 dark:focus:placeholder-gray-300 transition-colors ease-in-out focus:outline-hidden border-2 focus:border-blue-300 dark:focus:border-blue-700 border-transparent"
 								/>
 							</div>
 
@@ -177,15 +175,15 @@ export default function Home() {
 				/>
 			</div>
 
-			{(isLoading || completion) && (
-				<div className="space-y-3 basis-1/2 p-3 rounded-md bg-gray-100 dark:bg-gray-900 w-full drop-shadow-sm">
-					<Section finished={finished} content={description}>
+			{(isLoading || object?.description) && (
+				<div className="space-y-3 basis-1/2 p-3 rounded-md bg-gray-100 dark:bg-gray-900 w-full drop-shadow-xs">
+					<Section finished={finished} content={object?.description}>
 						Description
 					</Section>
-					<Section finished={finished} content={text}>
+					<Section finished={finished} content={object?.text}>
 						Text
 					</Section>
-					{finished && text && (
+					{finished && object?.text && (
 						<button
 							onClick={copyBoth}
 							className="w-full lg:w-auto rounded-md underline hover:no-underline hover:bg-gray-200 dark:hover:bg-gray-800 flex items-center gap-2"
@@ -243,12 +241,10 @@ function Section({
 			</h2>
 
 			{loading && (
-				<div className="bg-gray-200 dark:bg-gray-800 animate-pulse rounded w-full h-6" />
+				<div className="bg-gray-200 dark:bg-gray-800 animate-pulse rounded-sm w-full h-6" />
 			)}
 			{content && (
-				<p className="whitespace-pre-wrap break-words">
-					{content.trim()}
-				</p>
+				<p className="whitespace-pre-wrap break-words">{content.trim()}</p>
 			)}
 			{finished && !content && (
 				<p className="text-gray-600 dark:text-gray-400 select-none">
