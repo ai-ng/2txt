@@ -1,6 +1,5 @@
 import { streamObject } from "ai";
 import { isSupportedImageType, schema } from "@/app/utils";
-import { openai } from "@ai-sdk/openai";
 
 export async function POST(req: Request) {
 	const base64 = await req.json();
@@ -14,12 +13,12 @@ export async function POST(req: Request) {
 		});
 	}
 
-	const { mimeType, image } = decodeBase64Image(base64);
+	const { mediaType, image } = decodeBase64Image(base64);
 
-	if (!mimeType || !image)
+	if (!mediaType || !image)
 		return new Response("Invalid image data", { status: 400 });
 
-	if (!isSupportedImageType(mimeType)) {
+	if (!isSupportedImageType(mediaType)) {
 		return new Response(
 			"Unsupported format. Only JPEG, PNG, GIF, and WEBP files are supported.",
 			{ status: 400 }
@@ -27,8 +26,8 @@ export async function POST(req: Request) {
 	}
 
 	const result = streamObject({
-		model: openai("gpt-4o-mini"),
-		maxTokens: 300,
+		model: "openai/gpt-4.1-nano",
+		maxOutputTokens: 300,
 		schema,
 		messages: [
 			{
@@ -37,7 +36,7 @@ export async function POST(req: Request) {
 					{
 						type: "image",
 						image,
-						mimeType,
+						mediaType,
 					},
 				],
 			},
@@ -51,7 +50,7 @@ function decodeBase64Image(dataString: string) {
 	const matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
 
 	return {
-		mimeType: matches?.[1],
+		mediaType: matches?.[1],
 		image: matches?.[2],
 	};
 }
