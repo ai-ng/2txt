@@ -43,8 +43,8 @@ export default function RootLayout({
 					</p>
 					<p>
 						Built with <A href="https://sdk.vercel.ai">Vercel AI SDK</A> &{" "}
-						<A href="https://platform.openai.com/docs/models/gpt-4o-mini">
-							GPT 4o-mini
+						<A href="https://platform.openai.com/docs/models/gpt-4.1-nano">
+							GPT 4.1-nano
 						</A>
 					</p>
 					<p>
