@@ -22,6 +22,6 @@ export const schema = z.object({
 		.string()
 		.optional()
 		.describe(
-			"The text OCR extracted from the image, if any. Include newlines where applicable. Un-obstruct text if there is something covering it, to make it readable. Example: const x = 5; const y = 10; const z = x + y; console.log(z);"
+			"The text OCR extracted from the image, if any. Include newlines where applicable. Un-obstruct text if there is something covering it, to make it readable. Do not include if there is no text. Example: const x = 5; const y = 10; const z = x + y; console.log(z);"
 		),
 });
