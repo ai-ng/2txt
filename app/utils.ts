@@ -16,12 +16,11 @@ export const schema = z.object({
 	description: z
 		.string()
 		.describe(
-			"A brief description of the image to be used as alt text. In this description, do not describe or extract text from the image. Example: Lines of code in a text editor."
+			"One concrete sentence of 20 words or fewer describing the visual image, without quoting or summarizing its written content."
 		),
 	text: z
 		.string()
-		.optional()
 		.describe(
-			"The text OCR extracted from the image, if any. Include newlines where applicable. Un-obstruct text if there is something covering it, to make it readable. Do not include if there is no text. Example: const x = 5; const y = 10; const z = x + y; console.log(z);"
+			"Complete OCR text from the primary content object, preserving useful line breaks. Return an empty string only when no text is legible."
 		),
 });

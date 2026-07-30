@@ -1,6 +1,10 @@
 import { streamObject } from "ai";
 import { isSupportedImageType, schema } from "@/app/utils";
 
+const systemPrompt = `Analyze this image for a fast alt-text and OCR utility.
+DESCRIPTION: Write one concrete sentence of at most 30 words. Describe what the image is; do not quote or summarize its written content.
+OCR: First identify the single primary content object. Transcribe every legible word and number inside that object, preserving useful line breaks. If the image is a screenshot, exclude app or browser chrome outside the primary post, email, document, code pane, card, or chart: status bars, navigation, sidebars, controls, recommendations, engagement counts, and unrelated panels. If there is no distinct focal object, transcribe all legible text. Never replace visible text with a summary.`;
+
 export async function POST(req: Request) {
 	const base64 = await req.json();
 	if (typeof base64 !== "string")
@@ -26,9 +30,16 @@ export async function POST(req: Request) {
 	}
 
 	const result = streamObject({
-		model: "openai/gpt-4.1-nano",
-		maxOutputTokens: 300,
+		model: "openai/gpt-5-nano",
+		maxOutputTokens: 800,
+		providerOptions: {
+			openai: {
+				reasoningEffort: "minimal",
+				textVerbosity: "low",
+			},
+		},
 		schema,
+		system: systemPrompt,
 		messages: [
 			{
 				role: "user",
