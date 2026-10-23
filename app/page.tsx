@@ -85,6 +85,12 @@ export default function Home() {
 		};
 	});
 
+	useEffect(() => {
+		return () => {
+			if (blobURL) URL.revokeObjectURL(blobURL);
+		};
+	}, [blobURL]);
+
 	async function handlePaste(e: ClipboardEvent) {
 		track("Paste");
 		const file = e.clipboardData?.files?.[0];
